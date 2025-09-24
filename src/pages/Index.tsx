@@ -1,10 +1,19 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import Icon from "@/components/ui/icon";
+import ImageModal from "@/components/ImageModal";
 
 const Index = () => {
+  const { toast } = useToast();
+  const [selectedImage, setSelectedImage] = useState<{src: string, alt: string} | null>(null);
+  const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
+  const [filter, setFilter] = useState('all');
   const equipmentModels = [
     {
       id: 1,
@@ -47,6 +56,35 @@ const Index = () => {
   const menuItems = [
     "Главная", "Каталог спецтехники", "Наличие", "О компании", "Контакты", "Сервисный центр", "Условия покупки"
   ];
+
+  const handleImageClick = (src: string, alt: string) => {
+    setSelectedImage({ src, alt });
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Заявка отправлена!",
+      description: `${formData.name}, мы свяжемся с вами по номеру ${formData.phone}`,
+    });
+    setFormData({ name: '', phone: '', message: '' });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const filteredModels = filter === 'all' 
+    ? equipmentModels 
+    : equipmentModels.filter(model => {
+        if (filter === 'available') return model.available;
+        if (filter === '3cx') return model.name.includes('3CX');
+        if (filter === '4cx') return model.name.includes('4CX');
+        return true;
+      });
 
   return (
     <div className="min-h-screen bg-white">
@@ -155,17 +193,50 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-roboto-condensed text-4xl font-bold mb-4">Каталог спецтехники</h2>
-            <p className="text-xl text-muted-foreground">Выберите подходящую модель экскаватора-погрузчика</p>
+            <p className="text-xl text-muted-foreground mb-6">Выберите подходящую модель экскаватора-погрузчика</p>
+            
+            {/* Фильтры */}
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              <Button 
+                variant={filter === 'all' ? 'default' : 'outline'} 
+                onClick={() => setFilter('all')}
+                size="sm"
+              >
+                Все модели
+              </Button>
+              <Button 
+                variant={filter === 'available' ? 'default' : 'outline'} 
+                onClick={() => setFilter('available')}
+                size="sm"
+              >
+                В наличии
+              </Button>
+              <Button 
+                variant={filter === '3cx' ? 'default' : 'outline'} 
+                onClick={() => setFilter('3cx')}
+                size="sm"
+              >
+                JCB 3CX
+              </Button>
+              <Button 
+                variant={filter === '4cx' ? 'default' : 'outline'} 
+                onClick={() => setFilter('4cx')}
+                size="sm"
+              >
+                JCB 4CX
+              </Button>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {equipmentModels.map((model) => (
+            {filteredModels.map((model) => (
               <Card key={model.id} className="hover:shadow-lg transition-shadow animate-fade-in">
                 <div className="aspect-video bg-muted rounded-t-lg overflow-hidden">
                   <img 
                     src={model.image} 
                     alt={model.name}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                    onClick={() => handleImageClick(model.image, model.name)}
                   />
                 </div>
                 <CardHeader className="pb-2">
@@ -236,26 +307,37 @@ const Index = () => {
             </div>
             <div className="bg-white/10 p-8 rounded-lg">
               <h3 className="font-roboto-condensed text-2xl font-bold mb-6">Заявка на консультацию</h3>
-              <div className="space-y-4">
-                <input 
+              <form onSubmit={handleFormSubmit} className="space-y-4">
+                <Input
+                  name="name"
                   type="text" 
-                  placeholder="Ваше имя" 
-                  className="w-full px-4 py-3 rounded bg-white/20 placeholder-white/70 text-white border border-white/30 focus:border-primary focus:outline-none"
+                  placeholder="Ваше имя"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="bg-white/20 placeholder-white/70 text-white border-white/30 focus:border-primary"
+                  required
                 />
-                <input 
+                <Input
+                  name="phone"
                   type="tel" 
-                  placeholder="Телефон" 
-                  className="w-full px-4 py-3 rounded bg-white/20 placeholder-white/70 text-white border border-white/30 focus:border-primary focus:outline-none"
+                  placeholder="Телефон"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="bg-white/20 placeholder-white/70 text-white border-white/30 focus:border-primary"
+                  required
                 />
-                <textarea 
-                  placeholder="Интересующая модель или вопрос" 
+                <Textarea
+                  name="message"
+                  placeholder="Интересующая модель или вопрос"
                   rows={3}
-                  className="w-full px-4 py-3 rounded bg-white/20 placeholder-white/70 text-white border border-white/30 focus:border-primary focus:outline-none resize-none"
-                ></textarea>
-                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  className="bg-white/20 placeholder-white/70 text-white border-white/30 focus:border-primary resize-none"
+                />
+                <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                   Отправить заявку
                 </Button>
-              </div>
+              </form>
             </div>
           </div>
         </div>
@@ -299,6 +381,16 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <ImageModal
+          src={selectedImage.src}
+          alt={selectedImage.alt}
+          isOpen={!!selectedImage}
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
     </div>
   );
 };
