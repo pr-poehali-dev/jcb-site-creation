@@ -29,7 +29,7 @@ const Index = () => {
       name: "JCB 3CX Plus",
       description: "Сборка Индия, на рычагах",
       price: "от 4 200 000 ₽",
-      image: "/img/dde388ce-824d-4f2a-a788-679773b6d1a4.jpg",
+      image: "/img/9245c832-1421-41f8-83ef-5355c249b9c1.jpg",
       available: true,
       features: ["Рычажное управление", "В наличии", "Наличный расчет"]
     },
@@ -38,7 +38,7 @@ const Index = () => {
       name: "JCB 4CX",
       description: "Мощный экскаватор-погрузчик",
       price: "от 5 800 000 ₽",
-      image: "/img/dde388ce-824d-4f2a-a788-679773b6d1a4.jpg",
+      image: "/img/61d1762d-7a7a-4ec6-924e-dd81ef92aaa3.jpg",
       available: false,
       features: ["Увеличенная мощность", "Тяжелые работы", "Высокая производительность"]
     }
