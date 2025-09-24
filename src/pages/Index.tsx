@@ -29,7 +29,7 @@ const Index = () => {
       name: "JCB 3CX Plus",
       description: "Сборка Индия, на рычагах",
       price: "от 4 200 000 ₽",
-      image: "/img/9245c832-1421-41f8-83ef-5355c249b9c1.jpg",
+      image: "https://cdn.poehali.dev/files/b000d2ae-d4d5-4417-9c03-3664a123838c.jpg",
       available: true,
       features: ["Рычажное управление", "В наличии", "Наличный расчет"]
     },
