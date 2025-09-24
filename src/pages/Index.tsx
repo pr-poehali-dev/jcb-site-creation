@@ -11,7 +11,7 @@ const Index = () => {
       name: "JCB 3CX Pro",
       description: "На джойстиках, сборка Индия",
       price: "от 4 500 000 ₽",
-      image: "/img/dde388ce-824d-4f2a-a788-679773b6d1a4.jpg",
+      image: "https://cdn.poehali.dev/files/6c590ef1-7a09-461d-9e83-44974d792d7d.jpg",
       available: false,
       features: ["Джойстиковое управление", "Индийская сборка", "Современная кабина"]
     },
